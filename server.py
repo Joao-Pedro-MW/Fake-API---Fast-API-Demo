@@ -7,7 +7,7 @@ faker = Faker()
 
 @app.get("/nome")
 def get_nomes():
-    return JSONResponse(content=['Nome',faker.name()])
+    return JSONResponse(content=['Nome',faker.unique.first_name()])
 
 if __name__ == "__main__":
     import uvicorn
