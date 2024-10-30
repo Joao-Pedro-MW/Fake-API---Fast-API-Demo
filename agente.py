@@ -20,7 +20,7 @@ def levenshtein(palavra1:str, palavra2:str)->int:
                 df[i][j] = 1 + min(df[i - 1][j], df[i][j - 1], df[i - 1][j - 1])
     return df[tam_pl1][tam_pl2]
 
-nomes = [loads(requests.get("http://localhost/nome").text)[1] for i in range(3)]
+nomes = [loads(requests.get("http://localhost/nome").text)[1] for i in range(10)]
 nomes_distancia = [levenshtein(nomes[0],nomes[i]) for i in range(len(nomes))]
 df = pd.DataFrame({
     "Nomes": nomes,
