@@ -6,7 +6,7 @@ app = FastAPI()
 faker = Faker()
 
 @app.get("/nome")
-def get_nomes():
+async def get_nomes():
     return JSONResponse(content=['Nome',faker.unique.first_name()])
 
 if __name__ == "__main__":
