@@ -9,7 +9,7 @@ load_dotenv()
 
 usuarios = {
     "foo": {
-        "hashed_password": "$2b$12$KIXtUO1Yx92TF/FelP/FSu8fHdzv9VkZzKcfpUS4DlB2vZ4QW.2vG",  # Corrigido para "hashed_password"
+        "hashed_password": "$2b$12$KIXtUO1Yx92TF/FelP/FSu8fHdzv9VkZzKcfpUS4DlB2vZ4QW.2vG",
     }
 }
 
@@ -21,21 +21,21 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+def valida_senha(input, senha):
+    return pwd_context.verify(input, senha)
 
-def get_password_hash(password):
+def get_hash(password):
     return pwd_context.hash(password)
 
-def authenticate_user(username: str, password: str):
-    user = usuarios.get(username)
+def autentica(usuario: str, senha: str):
+    user = usuarios.get(usuario)
     if not user:
         return False
-    if not verify_password(password, user["hashed_password"]):
+    if not valida_senha(senha, user["hashed_password"]):
         return False
     return user
 
-def create_access_token(data: dict):
+def cria_token(data: dict):
     to_encode = data.copy()
     expire = datetime.now() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
