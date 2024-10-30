@@ -1,6 +1,11 @@
 import requests
 from json import loads
 import pandas as pd
+from dotenv import load_dotenv
+import os
+load_dotenv()
+token = os.getenv("AGENTE_TOKEN")
+headers = {"Authorization": f"Bearer {token}"}
 
 def levenshtein(palavra1:str, palavra2:str)->int:
     tam_pl1, tam_pl2 = len(palavra1), len(palavra2)
@@ -20,7 +25,8 @@ def levenshtein(palavra1:str, palavra2:str)->int:
                 df[i][j] = 1 + min(df[i - 1][j], df[i][j - 1], df[i - 1][j - 1])
     return df[tam_pl1][tam_pl2]
 
-nomes = [loads(requests.get("http://localhost/nome",auth="$2b$12$KIXtUO1Yx92TF/FelP/FSu8fHdzv9VkZzKcfpUS4DlB2vZ4QW.2vG").text)[1] for i in range(10)]
+
+nomes = [loads(requests.get("http://localhost/nome",headers=headers).text)[1] for i in range(10)]
 nomes_distancia = [levenshtein(nomes[0],nomes[i]) for i in range(len(nomes))]
 df = pd.DataFrame({
     "Nomes": nomes,
