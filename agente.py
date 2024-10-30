@@ -3,20 +3,17 @@ from json import loads
 import pandas as pd
 from dotenv import load_dotenv
 import os
+
 load_dotenv()
 token = os.getenv("AGENTE_TOKEN")
-headers = {"Authorization": f"Bearer {token}"}
 
-def levenshtein(palavra1:str, palavra2:str)->int:
+def levenshtein(palavra1: str, palavra2: str) -> int:
     tam_pl1, tam_pl2 = len(palavra1), len(palavra2)
-    # criação da matriz vazia, onde o número de linhas é 1 mais que o tamanho da primeira palavra 
-    # e o número de colunas é 1 a mais que o tamanho de letras da palavra 2
     df = [[0] * (tam_pl2 + 1) for _ in range(tam_pl1 + 1)]
     for i in range(tam_pl1 + 1):
         df[i][0] = i
     for j in range(tam_pl2 + 1):
         df[0][j] = j
-    
     for i in range(1, tam_pl1 + 1):
         for j in range(1, tam_pl2 + 1):
             if palavra1[i - 1] == palavra2[j - 1]:
@@ -25,11 +22,12 @@ def levenshtein(palavra1:str, palavra2:str)->int:
                 df[i][j] = 1 + min(df[i - 1][j], df[i][j - 1], df[i - 1][j - 1])
     return df[tam_pl1][tam_pl2]
 
+nomes = [loads(requests.get("http://localhost:80/nome").text)['nome'] for i in range(10)]
 
-nomes = [loads(requests.get("http://localhost/nome",headers=headers).text)[1] for i in range(10)]
-nomes_distancia = [levenshtein(nomes[0],nomes[i]) for i in range(len(nomes))]
+nomes_distancia = [levenshtein(nomes[0], nomes[i]) for i in range(len(nomes))]
 df = pd.DataFrame({
     "Nomes": nomes,
     "Distância para origem": nomes_distancia
 })
+
 print(df)
